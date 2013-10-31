@@ -22,17 +22,17 @@
 #   file functions.vim.vanilla must exist. Run the Vim    #
 #   command :RUpdateObjList with R vanilla running (that  #
 #   is, R with only the default libraries loaded) and,    #
-#   then, the file functions.vim be renamed to            #
+#   then, rename the file functions.vim to                #
 #   functions.vim.vanilla.                                #
 ###########################################################
 
 
 
 PLUGINHOME=`pwd`
-PLUGINVERSION=0.9.9.4
+PLUGINVERSION=0.9.9.6
 DEBIANTIME=`date -R`
 PLUGINRELEASEDATE=`date +"%Y-%m-%d"`
-VIM2HTML=/usr/local/share/vim/vim73/doc/vim2html.pl 
+VIM2HTML=/usr/local/share/vim/vim74/doc/vim2html.pl 
 
 zip:
 	# Clean previously created files
@@ -54,7 +54,7 @@ zip:
 	    r-plugin/objlist/omnils_datasets r-plugin/objlist/omnils_graphics \
 	    r-plugin/objlist/omnils_grDevices r-plugin/objlist/omnils_methods \
 	    r-plugin/objlist/omnils_stats r-plugin/objlist/omnils_utils \
-	    r-plugin/objlist/omnils_vimcom r-plugin/objlist/README \
+	    r-plugin/objlist/omnils_vimcom.plus r-plugin/objlist/README \
 	    r-plugin/tex_indent.vim r-plugin/r.snippets \
 	    r-plugin/common_buffer.vim r-plugin/common_global.vim \
 	    bitmaps/ricon.xbm bitmaps/ricon.png \
@@ -229,6 +229,7 @@ htmldoc:
 	    sed -i -e 's/<\/a>|/<\/a>/g' r-plugin.html ;\
 	    sed -i -e 's/|<code /<code /g' r-plugin.html ;\
 	    sed -i -e 's/<\/code>|/<\/code>/g' r-plugin.html ;\
+	    sed -i -e 's/`//g' r-plugin.html ;\
 	    mv r-plugin.html vim-stylesheet.css /tmp )
 
 all: zip deb htmldoc

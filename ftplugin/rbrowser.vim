@@ -101,12 +101,11 @@ function! UpdateOB(what)
     sil normal! ggdG
     let @@ = save_unnamed_reg 
     if wht == "GlobalEnv"
-        call setline(1, ".GlobalEnv | Libraries")
-        exe "silent read " . g:rplugin_esc_tmpdir . g:rplugin_globenv_f
+        let fcntt = readfile($VIMRPLUGIN_TMPDIR . g:rplugin_globenv_f)
     else
-        call setline(1, "Libraries | .GlobalEnv")
-        exe "silent read " . g:rplugin_esc_tmpdir . g:rplugin_liblist_f
+        let fcntt = readfile($VIMRPLUGIN_TMPDIR . g:rplugin_liblist_f)
     endif
+    call setline(1, fcntt)
     call cursor(curline, curcol)
     if bufname("%") =~ "Object_Browser" || b:rplugin_extern_ob
         setlocal nomodifiable
@@ -258,7 +257,7 @@ function! RBrowserGetName(cleantail)
     endif
 
     let curpos = stridx(line, "#")
-    let word = substitute(line, '.\{-}\(.#\)\(.\{-}\)\t', '\2\1', '')
+    let word = substitute(line, '.\{-}\(.#\)\(.\{-}\)\t.*', '\2\1', '')
     let word = substitute(word, '\[#$', '$', '')
     let word = substitute(word, '<#$', '@', '')
     let word = substitute(word, '.#$', '', '')
@@ -267,14 +266,14 @@ function! RBrowserGetName(cleantail)
         let word = '`' . word . '`'
     endif
 
-    if curpos == 4
+    if (g:rplugin_curview == "GlobalEnv" && curpos == 4) || (g:rplugin_curview == "libraries" && curpos == 3)
         " top level object
         let word = substitute(word, '\$\[\[', '[[', "g")
         if a:cleantail
             let word = substitute(word, '[\$@]$', '', '')
         endif
         if g:rplugin_curview == "libraries"
-            return "package:" . word
+            return "package:" . substitute(word, "#", "", "")
         else
             return word
         endif
@@ -369,6 +368,8 @@ else
     let s:isutf8 = 0
 endif
 unlet s:envstring
+
+call setline(1, ".GlobalEnv | Libraries")
 
 call RSourceOtherScripts()
 

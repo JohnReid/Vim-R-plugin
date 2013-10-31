@@ -1,6 +1,6 @@
 " markdown Text with R statements
 " Language: markdown with R code chunks
-" Last Change: Tue Feb 26, 2013  01:48PM
+" Last Change: Thu Sep 05, 2013  06:35PM
 "
 " CONFIGURATION:
 "   To highlight chunk headers as R code, put in your vimrc:
@@ -36,18 +36,21 @@ setlocal iskeyword=@,48-57,_,.
 
 if exists("g:rmd_syn_hl_chunk")
     " highlight R code inside chunk header
-    syntax match rmdChunkDelim "^```{r" contained
+    syntax match rmdChunkDelim "^[ \t]*```{r" contained
     syntax match rmdChunkDelim "}$" contained
 else
-    syntax match rmdChunkDelim "^```{r.*}$" contained
+    syntax match rmdChunkDelim "^[ \t]*```{r.*}$" contained
 endif
-syntax match rmdChunkDelim "^```$" contained
-syntax region rmdChunk start="^``` *{r.*}$" end="^```$" contains=@R,rmdChunkDelim keepend transparent fold
+syntax match rmdChunkDelim "^[ \t]*```$" contained
+syntax region rmdChunk start="^[ \t]*``` *{r.*}$" end="^[ \t]*```$" contains=@R,rmdChunkDelim keepend fold
 
 " also match and syntax highlight in-line R code
 syntax match rmdEndInline "`" contained
 syntax match rmdBeginInline "`r " contained
-syntax region rmdrInline start="`r "  end="`" contains=@R,rmdBeginInline,rmdEndInline keepend transparent
+syntax region rmdrInline start="`r "  end="`" contains=@R,rmdBeginInline,rmdEndInline keepend
+
+" match slidify special marker
+syntax match rmdSlidifySpecial "\*\*\*"
 
 
 if rmdIsPandoc == 0
@@ -65,6 +68,7 @@ if rmdIsPandoc == 0
     syntax match rmdLaTeXRegDelim "\$\$" contained
     syntax match rmdLaTeXRegDelim "\$\$latex$" contained
     syntax region rmdLaTeXRegion start="^\$\$" skip="\\\$" end="^\$\$" contains=@LaTeX,rmdLaTeXSt,rmdLaTeXRegDelim keepend 
+    syntax region rmdLaTeXRegion2 start="^\\\[" end="\\\]" contains=@LaTeX,rmdLaTeXSt,rmdLaTeXRegDelim keepend
     hi def link rmdLaTeXSt Statement
     hi def link rmdLaTeXInlDelim Special
     hi def link rmdLaTeXRegDelim Special
@@ -74,5 +78,6 @@ hi def link rmdChunkDelim Special
 hi def link rmdBeginInline Special
 hi def link rmdEndInline Special
 hi def link rmdBlockQuote Comment
+hi def link rmdSlidifySpecial Special
 
 let b:current_syntax = "rmd"
